@@ -1,0 +1,43 @@
+plugins {
+  id 'org.springframework.boot' version '2.5.4'
+  id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+  id 'java'
+}
+
+group = 'vip.linhs.stock'
+version = '0.0.1'
+
+sourceCompatibility = 1.8
+targetCompatibility = 1.8
+
+repositories {
+  maven { url "https://maven.aliyun.com/nexus/content/groups/public/" }
+  mavenCentral()
+}
+
+configurations {
+  compile.exclude module: 'spring-boot-starter-tomcat'
+  compile.exclude group: 'org.apache.tomcat.embed'
+  providedRuntime
+}
+
+dependencies {
+  implementation 'org.springframework.boot:spring-boot-starter-data-rest'
+  implementation 'org.springframework.boot:spring-boot-starter-data-jdbc'
+  implementation 'org.springframework.boot:spring-boot-starter-cache'
+  implementation 'org.springframework.boot:spring-boot-starter-undertow'
+  implementation 'com.github.ben-manes.caffeine:caffeine'
+  implementation 'org.apache.httpcomponents:httpclient:4.5.13'
+  implementation 'com.alibaba:fastjson:2.0.10'
+  implementation 'com.belerweb:pinyin4j:2.5.1'
+  implementation 'commons-beanutils:commons-beanutils:1.9.4'
+  implementation 'org.apache.commons:commons-lang3:3.12.0'
+
+  runtimeOnly 'mysql:mysql-connector-java'
+  developmentOnly 'org.springframework.boot:spring-boot-devtools'
+  testImplementation 'org.springframework.boot:spring-boot-starter-test'
+}
+
+test {
+  useJUnitPlatform()
+}

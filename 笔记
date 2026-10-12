@@ -1,0 +1,96 @@
+.venv/bin/python run_backtest.py \
+  --source binance \
+  --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,ADAUSDT,TRXUSDT,AVAXUSDT,LINKUSDT,LTCUSDT,BCHUSDT,DOTUSDT,NEARUSDT,SUIUSDT,APTUSDT,ARBUSDT,OPUSDT,UNIUSDT,INJUSDT \
+  --interval 4h \
+  --start 2021-01-01 \
+  --end 2026-07-01 \
+  --cache-dir data/binance_cache \
+  --weights-out data/4h_min120_weights.csv \
+  --summary-out data/4h_min120_summary.csv \
+  --curve-out data/4h_min120_equity_curve.csv \
+  --details-out data/4h_min120_backtest_details.csv \
+  --curve-plot-out data/4h_min120_equity_curve.svg
+
+
+python - <<'PY'
+from liquidity_strategy.binance_data import BinanceUSDMClient
+
+client = BinanceUSDMClient()
+market, _ = client.download(
+    ["BTCUSDT", "ETHUSDT"],
+    "1h",
+    "2024-01-01",
+    "2024-01-15",
+    cache_dir="data/binance_cache",
+    refresh=True,
+    include_funding=False,
+)
+print(market.groupby("symbol").size())
+PY
+
+别人问： 你好，我上个月也研究了这个策略，但我感觉，最关键的其实还是池子的确定，能请教下，你对于最小年限，大还是设的多少吗？我设置的3年，感觉有点严格。至于top k我尝试过15 20，效果区别不大
+博主答复：120就行过滤就ok
+
+还有咨询调仓频率和最小周期的，博主答复是1-2天，最小周期是4小时。
+
+
+模拟盘执行
+export BINANCE_TESTNET_API_KEY="vValTLvdaNkpF5RuXH86JTi5Q1gfQE44yT0htRnDkFWR6BqkjkuGm95ASel5QHj4"
+export BINANCE_TESTNET_API_SECRET="Y6I9smbr6Lv1ccsCUseGiAmadpfRjgXlq4ytByiGOtJQIfhPek2vByCYq45IZFPT"
+export BINANCE_TESTNET_BASE_URL="https://testnet.binancefuture.com"
+
+vValTLvdaNkpF5RuXH86JTi5Q1gfQE44yT0htRnDkFWR6BqkjkuGm95ASel5QHj4
+Y6I9smbr6Lv1ccsCUseGiAmadpfRjgXlq4ytByiGOtJQIfhPek2vByCYq45IZFPT
+
+
+
+nohup python3 live_runner.py \
+  --data-dir data/binance_cache \
+  --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,ADAUSDT,TRXUSDT,AVAXUSDT,LINKUSDT,LTCUSDT,BCHUSDT,DOTUSDT,NEARUSDT,SUIUSDT,APTUSDT,ARBUSDT,OPUSDT,UNIUSDT,INJUSDT \
+  --interval 4h \
+  --account-mode testnet \
+  --submit-testnet-orders \
+  --max-order-notional 1000 \
+  --leverage 2.0 \
+  --loop \
+  --refresh-data \
+  --poll-seconds 300 \
+  --market-refresh-seconds 14400 \
+  --state-out data/live_runner_state.json \
+  --orders-out data/live_runner_orders.csv \
+  --curve-out data/live_runner_equity_curve.csv \
+  --curve-plot-out data/live_runner_equity_curve.svg \
+  --max-weight-per-instrument 0.075 \
+  --adv-window-days 20 \
+  --max-adv-participation 0.01 \
+  --atr-window-days 14 \
+  --min-liquidation-buffer 0.10 \
+  --min-liquidation-atr-multiple 3.0 \
+  --max-liquidation-atr-multiple 6.0 \
+  --stop-atr-multiple 2.5 \
+  --take-profit-atr-multiple 4.0 \
+  > logs/live_runner.log 2>&1 < /dev/null &
+
+
+mysqladmin -u root password "123456"
+
+INSERT INTO trade_user
+  (id, account_id, password, cookie, validate_key)
+VALUES
+  (1, '540820059917', '253649', NULL, NULL)
+ON DUPLICATE KEY UPDATE
+  account_id = VALUES(account_id),
+  password = VALUES(password),
+  cookie = NULL,
+  validate_key = NULL;
+
+cd /Users/dongtao/codex/stock-master/stock-service
+
+./gradlew clean bootJar -x test
+java -jar build/libs/stock-service-0.0.1.jar
+
+cd /Users/dongtao/codex/stock-master/stock-web
+npm start
+
+dongtao@dongtaodeMacBook-Pro ~ % curl -sS http://127.0.0.1:8088/api/market/health
+{"message": "please login first"}%                                              dongtao@dongtaodeMacBook-Pro ~ % 
