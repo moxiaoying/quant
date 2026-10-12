@@ -44,22 +44,18 @@ Y6I9smbr6Lv1ccsCUseGiAmadpfRjgXlq4ytByiGOtJQIfhPek2vByCYq45IZFPT
 
 
 
+
 nohup python3 live_runner.py \
   --data-dir data/binance_cache \
-  --symbols BTCUSDT,ETHUSDT,SOLUSDT,BNBUSDT,XRPUSDT,DOGEUSDT,ADAUSDT,TRXUSDT,AVAXUSDT,LINKUSDT,LTCUSDT,BCHUSDT,DOTUSDT,NEARUSDT,SUIUSDT,APTUSDT,ARBUSDT,OPUSDT,UNIUSDT,INJUSDT \
-  --interval 4h \
+  --symbols auto \
+  --dynamic-universe \
+  --universe-size 100 \
+  --universe-refresh-seconds 86400 \
+  --min-quote-volume 10000000  --interval 4h \
   --account-mode testnet \
   --submit-testnet-orders \
-  --max-order-notional 1000 \
+  --max-order-notional 300 \
   --leverage 2.0 \
-  --loop \
-  --refresh-data \
-  --poll-seconds 300 \
-  --market-refresh-seconds 14400 \
-  --state-out data/live_runner_state.json \
-  --orders-out data/live_runner_orders.csv \
-  --curve-out data/live_runner_equity_curve.csv \
-  --curve-plot-out data/live_runner_equity_curve.svg \
   --max-weight-per-instrument 0.075 \
   --adv-window-days 20 \
   --max-adv-participation 0.01 \
@@ -69,8 +65,15 @@ nohup python3 live_runner.py \
   --max-liquidation-atr-multiple 6.0 \
   --stop-atr-multiple 2.5 \
   --take-profit-atr-multiple 4.0 \
-  > logs/live_runner.log 2>&1 < /dev/null &
-
+  --loop \
+  --refresh-data \
+  --poll-seconds 300 \
+  --market-refresh-seconds 14400 \
+  --state-out data/live_runner_state.json \
+  --orders-out data/live_runner_orders.csv \
+  --curve-out data/live_runner_equity_curve.csv \
+  --curve-plot-out data/live_runner_equity_curve.svg \
+  > logs/live_runner.log 2>&1 &
 
 mysqladmin -u root password "123456"
 
@@ -94,3 +97,13 @@ npm start
 
 dongtao@dongtaodeMacBook-Pro ~ % curl -sS http://127.0.0.1:8088/api/market/health
 {"message": "please login first"}%                                              dongtao@dongtaodeMacBook-Pro ~ % 
+
+
+
+--githua 使用
+git init
+git add README.md
+git commit -m "first commit"
+git branch -M main
+git remote add origin https://github.com/moxiaoying/quant.git
+git push -u origin main
